@@ -1,10 +1,9 @@
 import { FaMicrosoft } from "react-icons/fa6";
 import { useMsal } from "@azure/msal-react";
 import emailIcon from "../assets/email marketing and newsletter with new message.svg";
-import { IconButton } from "@material-tailwind/react";
 
 export const Auth = () => {
-  const { instance, accounts } = useMsal();
+  const { instance } = useMsal();
   const handleLogin = async () => {
     try {
       await instance.loginPopup({ scopes: ["Mail.Send"] });

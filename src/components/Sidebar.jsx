@@ -1,33 +1,45 @@
 import React from "react";
-import { Link } from "react-router";
+import { Link, NavLink } from "react-router";
 
 export const Sidebar = () => {
   return (
-    <div className="min-w-[230px] bg-base-blue">
+    <div className=" max-w-[200px] bg-base-blue font-kumbh-sans">
       <div className="p-16 border-b">
         <h3 className="font-bold text-[24px] text-white text-center">Mailer</h3>
       </div>
       <ol className="[&>li]:text-white [&>li]:text-[18px] text-center flex flex-col mt-3 ">
         <li>
-          <Link
+          <NavLink
             to={"/broadcast"}
-            className="hover:bg-[#5376DF] w-full inline-block py-3">
+            className={({ isActive }) =>
+              ` ${
+                isActive ? "bg-[#5376DF]" : ""
+              } hover:bg-[#5376DF] w-full inline-block py-3`
+            }>
             Broadcast
-          </Link>
+          </NavLink>
         </li>
         <li>
-          <Link
+          <NavLink
             to={"/template"}
-            className="hover:bg-[#5376DF] w-full inline-block py-3">
+            className={({ isActive }) =>
+              ` ${
+                isActive ? "bg-[#5376DF]" : ""
+              } hover:bg-[#5376DF] w-full inline-block py-3`
+            }>
             Template
-          </Link>
+          </NavLink>
         </li>
         <li>
-          <Link
+          <NavLink
             to={"/email"}
-            className="hover:bg-[#5376DF] w-full inline-block py-3">
+            className={({ isActive }) =>
+              ` ${
+                isActive ? "bg-[#5376DF]" : ""
+              } hover:bg-[#5376DF] w-full inline-block py-3`
+            }>
             Email
-          </Link>
+          </NavLink>
         </li>
       </ol>
     </div>
