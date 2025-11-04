@@ -13,7 +13,7 @@ export const Navbar = () => {
       <button
         type="button"
         onClick={logout}
-        className="font-kumbh-sans border border-transparent transition-all px-4 py-1 rounded-md hover:border-gray-500">
+        className="font-kumbh-sans border  transition-all px-4 py-0.5 text-[14px] border-gray-400 rounded-md hover:border-gray-500">
         Log Out
       </button>
     </div>
