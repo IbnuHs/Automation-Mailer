@@ -5,13 +5,28 @@ import { useMsal } from "@azure/msal-react";
 
 export const useSendEmail = () => {
   const { accounts, instance } = useMsal();
+  const cleanEmails = emails => {
+    if (Array.isArray(emails)) {
+      return emails
+        .map(e => e.trim())
+        .map(e => e.replace(/\u200B/g, ""))
+        .filter(e => e.length > 0);
+    }
+    return (emails || "")
+      .split(/[;,]+/)
+      .map(e => e.trim())
+      .map(e => e.replace(/\u200B/g, ""))
+      .filter(e => e.length > 0);
+  };
+
   const sendEmailApi = async ({ subject, body, to, cc }) => {
     const tokenResponse = await instance.acquireTokenSilent({
       scopes: ["Mail.Send"],
       account: accounts[0],
     });
-
     const accessToken = tokenResponse.accessToken;
+    const toList = cleanEmails(to);
+    const ccList = cleanEmails(cc);
     const email = {
       message: {
         subject,
@@ -19,8 +34,9 @@ export const useSendEmail = () => {
           contentType: "HTML",
           content: body,
         },
-        toRecipients: to.map(address => ({ emailAddress: { address } })),
-        ccRecipients: cc?.map(address => ({ emailAddress: { address } })) || [],
+        toRecipients: toList.map(address => ({ emailAddress: { address } })),
+        ccRecipients:
+          ccList?.map(address => ({ emailAddress: { address } })) || [],
       },
     };
 
