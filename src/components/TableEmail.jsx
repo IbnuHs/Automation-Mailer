@@ -1,7 +1,6 @@
 import React from "react";
 import { Typography } from "@material-tailwind/react";
 export const TableEmail = ({ data }) => {
-  // console.log(data);
   return (
     <>
       <div className="font-kumbh-sans">

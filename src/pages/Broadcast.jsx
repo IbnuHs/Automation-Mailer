@@ -36,7 +36,7 @@ export function BroadCast() {
             activeStep={activeStep}
             isLastStep={value => setIsLastStep(value)}
             isFirstStep={value => setIsFirstStep(value)}>
-            <Step className="w-fit h-fit p-2" onClick={() => setActiveStep(0)}>
+            <Step className="w-fit h-fit p-2">
               <FaFileUpload className="h-4 w-4" />
               <div className="absolute -bottom-[2.5rem] w-max text-center">
                 <Typography
@@ -52,7 +52,7 @@ export function BroadCast() {
                 </Typography>
               </div>
             </Step>
-            <Step className="w-fit h-fit p-2" onClick={() => setActiveStep(1)}>
+            <Step className="w-fit h-fit p-2">
               <TbChecklist className="h-4 w-4" />
               <div className="absolute -bottom-[2.5rem] w-max text-center">
                 <Typography
@@ -68,7 +68,7 @@ export function BroadCast() {
                 </Typography>
               </div>
             </Step>
-            <Step className="w-fit h-fit p-2" onClick={() => setActiveStep(2)}>
+            <Step className="w-fit h-fit p-2">
               <BsFillSendFill className="h-4 w-4" />
               <div className="absolute -bottom-[2.5rem] w-max text-center">
                 <Typography

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import * as xlsx from "xlsx";
 import { TableEmail } from "../components/TableEmail";
 import bgEmail from "../assets/Email marketing and newsletter content.svg";
+import Swal from "sweetalert2";
 
 export const Email = () => {
   const fileInputRef = useRef(null);
@@ -34,6 +35,11 @@ export const Email = () => {
   }, [file]);
   const saveEmail = () => {
     localStorage.setItem("email", JSON.stringify(data));
+    Swal.fire({
+      title: "Success",
+      text: "Email Saved",
+      icon: "success",
+    });
   };
   const deleteEmail = () => {
     localStorage.removeItem("email");
