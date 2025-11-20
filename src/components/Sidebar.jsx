@@ -1,12 +1,11 @@
 import React from "react";
 import { IoMdMail } from "react-icons/io";
-import { Link, NavLink } from "react-router";
+import { NavLink } from "react-router";
 import { useMsal } from "@azure/msal-react";
 import { IoPerson } from "react-icons/io5";
 
 export const Sidebar = () => {
   const { accounts } = useMsal();
-  console.log(accounts);
   return (
     <div className="w-full max-w-[200px] bg-base-blue flex flex-col h-screen font-kumbh-sans">
       <div className="py-10 px-5 border-b ">
@@ -21,7 +20,7 @@ export const Sidebar = () => {
         <ol className="[&>li]:text-white [&>li]:text-[18px] text-center flex flex-col mt-3">
           <li>
             <NavLink
-              to={"/broadcast"}
+              to={"/"}
               className={({ isActive }) =>
                 ` ${
                   isActive ? "bg-[#5376DF]" : ""

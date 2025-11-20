@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Stepper, Step, Button, Typography } from "@material-tailwind/react";
 import { FaFileUpload } from "react-icons/fa";
 import { UploadCSV } from "../components/UploadCSV";
@@ -13,20 +13,40 @@ export function BroadCast() {
   const [isFirstStep, setIsFirstStep] = useState(false);
   const handleNext = () => !isLastStep && setActiveStep(cur => cur + 1);
   const handlePrev = () => !isFirstStep && setActiveStep(cur => cur - 1);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState(() => {
+    const saved = sessionStorage.getItem("data");
+    return saved ? JSON.parse(saved) : null;
+  });
+  const isStatusList = JSON.parse(sessionStorage.getItem("statusList"));
   const [alreadySent, setAlreadySent] = useState(false);
-
   const renderStepContent = () => {
     switch (activeStep) {
       case 0:
-        return <UploadCSV data={data} setData={setData} />;
+        return (
+          <UploadCSV
+            data={data}
+            setData={setData}
+            setActiveStep={setActiveStep}
+          />
+        );
       case 1:
         return <CheckTemplate data={data} />;
       case 2:
-        return <SendEmail data={data} setAlreadySent={setAlreadySent} />;
+        return (
+          <SendEmail
+            data={data}
+            setData={setData}
+            setAlreadySent={setAlreadySent}
+            setActiveStep={setActiveStep}
+          />
+        );
     }
   };
-
+  useEffect(() => {
+    if (isStatusList && Object.keys(isStatusList).length > 0) {
+      setActiveStep(2);
+    }
+  }, []);
   return (
     <div className="flex flex-col items-center h-full pb-2 box-border overflow-auto">
       <div className="w-full px-24 ">
@@ -91,7 +111,13 @@ export function BroadCast() {
         {renderStepContent()}
       </div>
       <div className="flex mt-2 w-full justify-between scale-90">
-        <Button onClick={handlePrev} disabled={isFirstStep || alreadySent}>
+        <Button
+          onClick={handlePrev}
+          disabled={
+            isFirstStep ||
+            alreadySent ||
+            (isStatusList && Object.keys(isStatusList).length > 0)
+          }>
           Prev
         </Button>
         <Button onClick={handleNext} disabled={isLastStep || !data}>

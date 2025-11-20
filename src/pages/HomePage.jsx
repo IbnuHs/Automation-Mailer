@@ -13,7 +13,7 @@ export const HomePage = () => {
       <div className="px-12 h-full flex flex-col  flex-1">
         <Navbar />
         <Routes>
-          <Route path="/broadcast" element={<BroadCast />} />
+          <Route path="/" element={<BroadCast />} />
           <Route path="/template" element={<Template />} />
           <Route path="/email" element={<Email />} />
         </Routes>

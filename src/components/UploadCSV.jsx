@@ -1,12 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import bgfile from "../assets/Email marketing and newsletter content.png";
 import * as xlsx from "xlsx";
-import { Typography } from "@material-tailwind/react";
 
-export const UploadCSV = ({ data, setData }) => {
+export const UploadCSV = ({ data, setData, setActiveStep }) => {
   const inputRef = useRef(null);
   const [file, setFile] = useState(null);
-
   useEffect(() => {
     let reader = new FileReader();
     if (file) {
@@ -17,11 +15,16 @@ export const UploadCSV = ({ data, setData }) => {
         const worksheets = workbook.Sheets[worksheetname];
         const jsonData = xlsx.utils.sheet_to_json(worksheets);
         setData(jsonData);
+        sessionStorage.setItem("data", JSON.stringify(jsonData));
       };
       reader.readAsArrayBuffer(file);
     }
-    // console.log(file);
-  }, [file, data]);
+  }, [file]);
+  const clear = () => {
+    setFile(null);
+    sessionStorage.removeItem("data");
+    setData(null);
+  };
   return (
     <div className="font-kumbh-sans flex flex-col h-full overflow-hidden">
       {data ? (
@@ -59,12 +62,9 @@ export const UploadCSV = ({ data, setData }) => {
           <div className="mt-5 flex justify-end">
             <button
               type="button"
-              onClick={() => {
-                setFile(null);
-                setData(null);
-              }}
+              onClick={clear}
               className="bg-red-500 text-white rounded-md p-1 px-4 text-[14px]">
-              Reset
+              Clear
             </button>
           </div>
         </div>

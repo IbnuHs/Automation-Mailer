@@ -1,20 +1,21 @@
 import { Button, Collapse } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
 import { BsFillSendFill } from "react-icons/bs";
-import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowDown, IoIosSend } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import { useSendEmail } from "../hook/useSendEmail";
 import { htmlBody } from "../utils/bodyEmail";
-import { FaCheck } from "react-icons/fa";
+import { FaCheck, FaHourglassEnd } from "react-icons/fa";
 import { CgSpinner } from "react-icons/cg";
 
-export const SendEmail = ({ data, setAlreadySent }) => {
+export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
   const [id, setId] = useState(null);
   const subject = localStorage.getItem("subject");
   const header = localStorage.getItem("header");
   const footer = localStorage.getItem("footer");
-  const { mutate } = useSendEmail();
+  const { mutate, mutateAsync } = useSendEmail();
   const [countDown, setCountDown] = useState(0);
+  const [disableAllSend, setDisableAllSend] = useState(false);
   const grouped = Object.values(
     data.reduce((acc, item) => {
       const kode = item["Kode Dealer"];
@@ -30,11 +31,17 @@ export const SendEmail = ({ data, setAlreadySent }) => {
       return acc;
     }, {})
   );
-  const [statusList, setStatusList] = useState({});
-  const [pending, setPending] = useState(false);
-  let isPendingThrottle = countDown > 0;
+  const [statusList, setStatusList] = useState(() => {
+    const saved = sessionStorage.getItem("statusList");
+    // console.log(saved);
+    return saved ? JSON.parse(saved) : {};
+  });
   useEffect(() => {
-    console.log(pending);
+    sessionStorage.setItem("statusList", JSON.stringify(statusList));
+  }, [statusList]);
+
+  const [pending, setPending] = useState(false);
+  useEffect(() => {
     if (countDown > 0) {
       const timer = setInterval(() => {
         setCountDown(prev => prev - 1);
@@ -45,8 +52,8 @@ export const SendEmail = ({ data, setAlreadySent }) => {
   }, [countDown]);
 
   const email = JSON.parse(localStorage.getItem("email"));
-  const handleSend = (item, listEmail) => {
-    setPending(true);
+  const handleSend = async (item, listEmail) => {
+    // setPending(true);
     setAlreadySent(true);
     const fullBody = `<p style="font-size:16px; font-family:serif;">${header.replace(
       /\n/g,
@@ -61,7 +68,7 @@ export const SendEmail = ({ data, setAlreadySent }) => {
         )}</p>
         `;
     setStatusList(prev => ({ ...prev, [item.kode]: "Loading" }));
-    // setCountDown(30);
+    // setStatusList(prev => ({ ...prev, [item.kode]: "Sent" }));
     mutate(
       {
         body: fullBody,
@@ -72,12 +79,12 @@ export const SendEmail = ({ data, setAlreadySent }) => {
       {
         onSuccess: () => {
           setStatusList(prev => ({ ...prev, [item.kode]: "Sent" }));
-          // setPending(true);
+          setPending(true);
           setCountDown(10);
         },
         onError: () => {
           setStatusList(prev => ({ ...prev, [item.kode]: "Failed" }));
-          // setPending(true);
+          setPending(true);
           setCountDown(10);
         },
         onMutate: () => {
@@ -87,63 +94,89 @@ export const SendEmail = ({ data, setAlreadySent }) => {
         },
       }
     );
-  };
-  const waitForCountdown = () => {
-    return new Promise(resolve => {
-      const checkCountdown = setInterval(() => {
-        setCountDown(prev => {
-          if (prev <= 0) {
-            clearInterval(checkCountdown);
-            resolve();
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    });
+    const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+    await delay(5000);
+    setPending(false);
   };
 
   const sendAllEmail = async () => {
+    const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+    setDisableAllSend(true);
     for (const item of grouped) {
       const listEmail = email?.find(mail => mail.dealer === item.kode);
-      if (!listEmail) continue;
-      const fullBody = `${header}
-      <br/>
-      ${htmlBody(item)}
-      <br/>
-      ${footer}
-    `;
-
-      setStatusList(prev => ({ ...prev, [item.kode]: "Loading" }));
-
-      mutate(
-        {
-          body: fullBody,
-          subject: subject,
-          to: listEmail.email.split(","),
-          cc: listEmail.emailcc.split(","),
-        },
-        {
-          onSuccess: () => {
-            setStatusList(prev => ({ ...prev, [item.kode]: "Sent" }));
+      const check = statusList[item.kode];
+      if (!check) {
+        console.log("Back");
+        console.log(item["Nama Dealer"], " : ", check);
+        const fullBody = `<p style="font-size:16px; font-family:serif;">${header.replace(
+          /\n/g,
+          "<br>"
+        )}</p>
+        <br/>
+        ${htmlBody(item)}
+        <br/>
+        <p style="font-size:16px;font-family:serif;">${footer.replace(
+          /\n/g,
+          "<br>"
+        )}</p>
+        `;
+        setPending(false);
+        setStatusList(prev => ({ ...prev, [item.kode]: "Loading" }));
+        await mutateAsync(
+          {
+            body: fullBody,
+            subject: subject,
+            to: listEmail.email.split(","),
+            cc: listEmail.emailcc.split(","),
           },
-          onError: () => {
-            setStatusList(prev => ({ ...prev, [item.kode]: "Failed" }));
-          },
-          onMutate: () => {
-            setStatusList(prev => ({ ...prev, [item.kode]: "Loading" }));
-            setCountDown(10);
-          },
-        }
-      );
-      setCountDown(10);
-      await waitForCountdown();
+          {
+            onSuccess: () => {
+              setStatusList(prev => ({ ...prev, [item.kode]: "Sent" }));
+            },
+            onError: e => {
+              setStatusList(prev => ({ ...prev, [item.kode]: "Failed" }));
+              console.log(e);
+            },
+            onMutate: () => {
+              setStatusList(prev => ({ ...prev, [item.kode]: "Loading" }));
+              console.log("Sedang Mutate");
+            },
+          }
+        );
+        setPending(true);
+        await delay(10000);
+        // setStatusList(prev => ({ ...prev, [item.kode]: "Sent" }));
+      }
     }
+  };
+
+  const reset = () => {
+    sessionStorage.removeItem("statusList");
+    sessionStorage.removeItem("data");
+    setData(null);
+    setActiveStep(0);
   };
 
   return (
     <div className="overflow-y-auto flex gap-3 flex-col">
-      {/* <Button onClick={sendAllEmail}>Click</Button> */}
+      <div className="flex justify-between">
+        <Button
+          color="red"
+          size="sm"
+          disabled={!data}
+          className="text-[11px] flex items-center gap-2"
+          onClick={reset}>
+          Reset
+        </Button>
+        <Button
+          color="green"
+          size="sm"
+          disabled={disableAllSend || pending}
+          className="text-[11px] flex items-center gap-2"
+          onClick={sendAllEmail}>
+          Send All
+        </Button>
+      </div>
       {grouped.map((item, index) => {
         const listEmail = email?.find(mail => mail.dealer === item.kode);
         const status = statusList[item.kode];
@@ -191,15 +224,15 @@ export const SendEmail = ({ data, setAlreadySent }) => {
                       : status === "Loading"
                       ? "bg-yellow-500"
                       : pending
-                      ? "bg-orange-100 cursor-not-allowed"
+                      ? "bg-orange-300 cursor-not-allowed"
                       : "bg-orange-500"
                   } flex items-center justify-center text-white px-4 py-1 text-[14px] rounded-md`}>
                   {status === "Sent" ? (
                     <FaCheck className="h-3 w-3" />
                   ) : status === "Loading" ? (
                     <CgSpinner className="h-3 w-3 animate-spin" />
-                  ) : status !== "Sent" && pending && countDown > 0 ? (
-                    <p>{countDown}</p>
+                  ) : status !== "Sent" && pending ? (
+                    <FaHourglassEnd className="animate-spin" />
                   ) : (
                     <BsFillSendFill className="h-3 w-3" />
                   )}

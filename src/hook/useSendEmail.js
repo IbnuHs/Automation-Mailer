@@ -2,7 +2,6 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useMsal } from "@azure/msal-react";
 import Swal from "sweetalert2";
-// import { instance } from "./authConfig"; // msal instance kamu
 
 export const useSendEmail = () => {
   const { accounts, instance } = useMsal();
@@ -58,9 +57,6 @@ export const useSendEmail = () => {
 
   const mutation = useMutation({
     mutationFn: sendEmailApi,
-    onSuccess: (_, variables) => {
-      console.log(`Email ke ${variables.to.join(", ")} berhasil dikirim.`);
-    },
     onError: error => {
       Swal.fire({
         title: "Error",
