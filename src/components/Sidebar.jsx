@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { IoMdMail } from "react-icons/io";
 import { NavLink } from "react-router";
 import { useMsal } from "@azure/msal-react";
@@ -6,6 +6,7 @@ import { IoPerson } from "react-icons/io5";
 
 export const Sidebar = () => {
   const { accounts } = useMsal();
+  const [onOpen, setOnOpen] = useState(false);
   return (
     <div className="w-full max-w-[200px] bg-base-blue flex flex-col h-screen font-kumbh-sans">
       <div className="py-10 px-5 border-b ">
@@ -19,15 +20,34 @@ export const Sidebar = () => {
       <div className="flex justify-between flex-col flex-1">
         <ol className="[&>li]:text-white [&>li]:text-[18px] text-center flex flex-col mt-3">
           <li>
-            <NavLink
-              to={"/"}
-              className={({ isActive }) =>
-                ` ${
-                  isActive ? "bg-[#5376DF]" : ""
-                } hover:bg-[#5376DF] w-full inline-block py-3`
-              }>
+            <button
+              onClick={() => setOnOpen(!onOpen)}
+              className="py-3 hover:bg-[#5376DF] w-full">
               Broadcast
-            </NavLink>
+            </button>
+            <div
+              className={`bg-[#6f8eeb] transition-all ${
+                onOpen ? "h-0 hidden" : "h-auto flex"
+              } flex-col`}>
+              <NavLink
+                to={"/"}
+                className={({ isActive }) =>
+                  ` ${
+                    isActive ? "bg-[#5376DF]" : ""
+                  }  text-[16px] pl-5 w-full inline-block py-3`
+                }>
+                Old Stock
+              </NavLink>
+              <NavLink
+                to={"/"}
+                className={({ isActive }) =>
+                  ` ${
+                    isActive ? "bg-[#5376DF]" : ""
+                  }  text-[16px] pl-5 w-full inline-block py-3`
+                }>
+                Intransit
+              </NavLink>
+            </div>
           </li>
           <li>
             <NavLink
