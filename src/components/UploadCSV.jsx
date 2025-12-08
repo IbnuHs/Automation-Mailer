@@ -13,8 +13,12 @@ export const UploadCSV = ({ data, setData, setActiveStep }) => {
         const workbook = xlsx.read(bstr, { type: "array" });
         const worksheetname = workbook.SheetNames[0];
         const worksheets = workbook.Sheets[worksheetname];
-        const jsonData = xlsx.utils.sheet_to_json(worksheets);
+        const jsonData = xlsx.utils.sheet_to_json(worksheets, {
+          defval: "",
+          blankrows: true,
+        });
         setData(jsonData);
+        console.log(jsonData);
         sessionStorage.setItem("data", JSON.stringify(jsonData));
       };
       reader.readAsArrayBuffer(file);
@@ -26,9 +30,9 @@ export const UploadCSV = ({ data, setData, setActiveStep }) => {
     setData(null);
   };
   return (
-    <div className="font-kumbh-sans flex flex-col h-full overflow-hidden">
+    <div className="font-kumbh-sans flex flex-col min-h-0 h-full flex-1 overflow-scroll">
       {data ? (
-        <div className="flex-1 overflow-auto relative px-5">
+        <div className="font-kumbh-sans flex flex-col flex-1 min-h-0">
           <table className="w-full table-fixed text-left whitespace-normal break-words">
             <thead className="bg-blue-gray-50 z-10">
               <tr>

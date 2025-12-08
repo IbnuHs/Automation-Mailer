@@ -16,6 +16,7 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
   const { mutate, mutateAsync } = useSendEmail();
   const [countDown, setCountDown] = useState(0);
   const [disableAllSend, setDisableAllSend] = useState(false);
+  const [alreadySentAll, setAlreadySentAll] = useState(false);
   const grouped = Object.values(
     data.reduce((acc, item) => {
       const kode = item["Kode Dealer"];
@@ -31,6 +32,14 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
       return acc;
     }, {})
   );
+  const replaceVariable = (variable = {}) => {
+    const res = JSON.parse(template)
+      .replace(/\n/g, "<br>")
+      .replace(/{{(.*?)}}/g, (_, key) => {
+        return variable[key.trim()] ?? "-";
+      });
+    return res;
+  };
   const [statusList, setStatusList] = useState(() => {
     const saved = sessionStorage.getItem("statusList");
     // console.log(saved);
@@ -55,6 +64,8 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
   const handleSend = async (item, listEmail) => {
     // setPending(true);
     setAlreadySent(true);
+    const bodyEmail = replaceVariable({ table: htmlBody(item) });
+    console.log(bodyEmail);
     const fullBody = `<p style="font-size:16px; font-family:serif;">${header.replace(
       /\n/g,
       "<br>"
@@ -71,7 +82,7 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
     // setStatusList(prev => ({ ...prev, [item.kode]: "Sent" }));
     mutate(
       {
-        body: fullBody,
+        body: bodyEmail,
         subject: subject,
         to: listEmail.email.split(","),
         cc: listEmail.emailcc.split(","),
@@ -98,16 +109,21 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
     await delay(5000);
     setPending(false);
   };
+  const template = localStorage.getItem("template");
 
+  // const bodyEmail = replaceVariable({ table: htmlBody });
+  // console.log(bodyEmail);
   const sendAllEmail = async () => {
     const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     setDisableAllSend(true);
     for (const item of grouped) {
       const listEmail = email?.find(mail => mail.dealer === item.kode);
       const check = statusList[item.kode];
-      if (!check) {
-        console.log("Back");
-        console.log(item["Nama Dealer"], " : ", check);
+      if (!check && listEmail) {
+        // console.log("Back");
+        // console.log(item["Nama Dealer"], " : ", check);
+        const bodyEmail = replaceVariable({ table: htmlBody(item) });
+        console.log(bodyEmail);
         const fullBody = `<p style="font-size:16px; font-family:serif;">${header.replace(
           /\n/g,
           "<br>"
@@ -147,6 +163,7 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
         await delay(10000);
         // setStatusList(prev => ({ ...prev, [item.kode]: "Sent" }));
       }
+      setAlreadySentAll(true);
     }
   };
 
@@ -200,11 +217,11 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
               </div>
               <div className="flex gap-3">
                 {id === index ? (
-                  <button
+                  <Button
                     onClick={() => setId(null)}
                     className="bg-red-600 text-white px-4 py-1 text-[14px] rounded-md">
                     <IoClose className="text-[18px]" />
-                  </button>
+                  </Button>
                 ) : (
                   <button
                     onClick={() => setId(index)}
@@ -215,7 +232,7 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
 
                 <button
                   onClick={() => handleSend(item, listEmail)}
-                  disabled={pending || status === "Sent"}
+                  disabled={pending || status === "Sent" || !listEmail}
                   className={`${
                     status === "Sent"
                       ? "bg-green-500 cursor-not-allowed"
@@ -223,15 +240,15 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
                       ? "bg-red-500"
                       : status === "Loading"
                       ? "bg-yellow-500"
-                      : pending
-                      ? "bg-orange-300 cursor-not-allowed"
+                      : pending || !listEmail
+                      ? "bg-orange-200 cursor-not-allowed"
                       : "bg-orange-500"
                   } flex items-center justify-center text-white px-4 py-1 text-[14px] rounded-md`}>
                   {status === "Sent" ? (
                     <FaCheck className="h-3 w-3" />
                   ) : status === "Loading" ? (
                     <CgSpinner className="h-3 w-3 animate-spin" />
-                  ) : status !== "Sent" && pending ? (
+                  ) : status !== "Sent" && pending && listEmail ? (
                     <FaHourglassEnd className="animate-spin" />
                   ) : (
                     <BsFillSendFill className="h-3 w-3" />
@@ -239,10 +256,13 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
                 </button>
               </div>
             </div>
+
             <Collapse open={id === index}>
               <div
                 className="mt-5"
-                dangerouslySetInnerHTML={{ __html: htmlBody(item) }}></div>
+                dangerouslySetInnerHTML={{
+                  __html: replaceVariable({ table: htmlBody(item) }),
+                }}></div>
             </Collapse>
           </div>
         );

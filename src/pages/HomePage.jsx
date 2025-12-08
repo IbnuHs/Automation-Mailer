@@ -8,15 +8,17 @@ import { BroadCast } from "./Broadcast";
 
 export const HomePage = () => {
   return (
-    <div className="h-screen max-h-screen overflow-hidden flex">
+    <div className="h-screen flex flex-1 min-h-0">
       <Sidebar />
-      <div className="px-12 h-full flex flex-col  flex-1">
+      <div className="px-12 flex flex-col flex-1 min-h-0">
         <Navbar />
-        <Routes>
-          <Route path="/" element={<BroadCast />} />
-          <Route path="/template" element={<Template />} />
-          <Route path="/email" element={<Email />} />
-        </Routes>
+        <div className="flex-1 flex min-h-0">
+          <Routes>
+            <Route path="/" element={<BroadCast />} />
+            <Route path="/template" element={<Template />} />
+            <Route path="/email" element={<Email />} />
+          </Routes>
+        </div>
       </div>
     </div>
   );

@@ -17,6 +17,7 @@ export function BroadCast() {
     const saved = sessionStorage.getItem("data");
     return saved ? JSON.parse(saved) : null;
   });
+  // console.log(data);
   const isStatusList = JSON.parse(sessionStorage.getItem("statusList"));
   const [alreadySent, setAlreadySent] = useState(false);
   const renderStepContent = () => {
@@ -48,7 +49,7 @@ export function BroadCast() {
     }
   }, []);
   return (
-    <div className="flex flex-col items-center h-full pb-2 box-border overflow-auto">
+    <div className="flex flex-col items-center flex-1 min-h-0 pb-2 box-border">
       <div className="w-full px-24 ">
         <div className=" origin-top">
           <Stepper
@@ -107,7 +108,7 @@ export function BroadCast() {
           </Stepper>
         </div>
       </div>
-      <div className="h-full mt-16 w-full flex flex-col flex-1 overflow-hidden box-border">
+      <div className="mt-16 w-full flex flex-col flex-1 min-h-0 overflow-hidden box-border">
         {renderStepContent()}
       </div>
       <div className="flex mt-2 w-full justify-between scale-90">

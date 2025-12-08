@@ -18,6 +18,8 @@ export const Template = () => {
       return;
     }
   };
+  const [bodyTemplate, setBodyTemplate] = useState("");
+
   const [footer, setFooter] = useState("");
   const saveFooter = () => {
     if (footer) {
@@ -26,21 +28,29 @@ export const Template = () => {
       return;
     }
   };
+  const savedTemplate = localStorage.getItem("template");
   const subj = localStorage.getItem("subject");
   const head = localStorage.getItem("header");
   const foot = localStorage.getItem("footer");
-  // useState(() => {
-  //   console.log(subj, head, foot);
-  // }, [subj, head, foot]);
-
+  const template = JSON.parse(savedTemplate) ?? null;
+  const [onEdit, setOnEdit] = useState(false);
+  const [localTemplate, setLocalTemplate] = useState(() => {
+    const temp = localStorage.getItem("template");
+    return temp ? JSON.parse(temp) : "";
+  });
+  const saveTemplate = () => {
+    localStorage.setItem("template", JSON.stringify(localTemplate));
+    setOnEdit(false);
+    alert("Berhasil Menyimpan Template");
+  };
   return (
-    <div className="w-full font-kumbh-sans overflow-auto">
+    <div className="w-full flex flex-col flex-1 font-kumbh-sans overflow-auto">
       <div className="font-kumbh-sans text-gray-600 flex gap-2 items-center">
         <MdEdit className="" />
         <h1>Template</h1>
       </div>
-      <div className="flex gap-4">
-        <div className="mt-5 flex flex-col gap-3 flex-1">
+      <div className="flex h-auto gap-4 flex-1 py-5">
+        <div className="flex flex-col gap-3 flex-1 h-full">
           <div className="flex flex-col gap-2">
             <label htmlFor="" className="font-semibold font-kumbh-sans">
               Subject
@@ -48,10 +58,11 @@ export const Template = () => {
             <input
               type="text"
               value={subject}
+              placeholder={subj}
               onChange={e => {
                 setSubject(e.target.value);
               }}
-              className="border-2 px-2 py-1 border-gray-300 rounded w-full"
+              className="border-2 px-2 py-1 focus:outline-none border-gray-300 rounded w-full"
             />
             <div className="flex justify-end">
               <button
@@ -62,68 +73,50 @@ export const Template = () => {
               </button>
             </div>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 flex-1">
             <label htmlFor="" className="font-semibold font-kumbh-sans">
-              Pembuka
+              Template
             </label>
-            <textarea
-              type="text"
-              rows={3}
-              value={header}
-              onChange={e => {
-                setHeader(e.target.value);
-              }}
-              className="border-2 rounded w-full p-2"
-            />
+            {onEdit ? (
+              <textarea
+                type="text"
+                placeholder={template}
+                value={localTemplate}
+                onChange={e => setLocalTemplate(e.target.value)}
+                className="border-2 flex-1 rounded w-full p-2 border-green-300 shadow-md shadow-green-100 focus:outline-none resize-y overflow-auto"
+              />
+            ) : (
+              <div className="border p-2 rounded-md border-gray-200 flex-1">
+                <p className="whitespace-pre-wrap">{localTemplate}</p>
+              </div>
+            )}
             <div className="flex justify-end">
-              <button
-                onClick={saveHeader}
-                className="bg-base-blue text-white px-4 rounded-md py-1 text-[14px]">
-                Save
-              </button>
+              {onEdit ? (
+                <button
+                  onClick={saveTemplate}
+                  className="bg-base-blue text-white px-4 rounded-md py-1 text-[14px]">
+                  Save
+                </button>
+              ) : (
+                <button
+                  onClick={() => setOnEdit(true)}
+                  className="bg-green-700 text-white px-4 rounded-md py-1 text-[14px]">
+                  Edit
+                </button>
+              )}
             </div>
           </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="" className="font-semibold font-kumbh-sans">
-              Footer
-            </label>
-            <textarea
-              type="text"
-              rows={3}
-              value={footer}
-              onChange={e => {
-                setFooter(e.target.value);
-              }}
-              className="border-2 rounded w-full p-2"
-            />
-          </div>
-          <div className="flex justify-end">
-            <button
-              onClick={saveFooter}
-              type="button"
-              className="bg-base-blue text-white px-4 rounded-md py-1 text-[14px]">
-              Save
-            </button>
-          </div>
         </div>
-        <div className="max-w-[350px] w-full border-2 p-4 rounded-md flex flex-col gap-4">
-          <h3 className="font-semibold text-center">Body Email</h3>
-          <div className="">
-            <h3 className="">Subject</h3>
-            <p className="bg-gray-300 p-1 rounded text-gray-700  text-wrap">
-              {subj ? subj : "Kosong"}
-            </p>
-          </div>
-          <div className="">
-            <h3 className="">Header</h3>
-            <p className="bg-gray-300 p-1 rounded text-gray-700 ">
-              {head ? head : "Kosong"}
-            </p>
-          </div>
-          <div className="">
-            <h3 className="">Footer</h3>
-            <p className="bg-gray-300 p-1 rounded text-gray-700 ">
-              {foot ? foot : "Kosong"}
+        <div className="max-w-[350px] w-full flex flex-col gap-4">
+          <div className="border-2 p-4 rounded-md flex flex-col gap-4">
+            <h3 className="font-semibold text-center">Variabel</h3>
+            <div className="bg-gray-100 flex gap-3 min-h-[100px] p-3 text-gray-800">
+              <p>{"{{dealer}}"}</p>
+              <p>{"{{table}}"}</p>
+            </div>
+            <p className="text-[12px] font-semibold text-red-600 leading-3">
+              Note : Tulis nama variabel beserta kurung kurawal {"{"} {"}"}{" "}
+              untuk digunakan
             </p>
           </div>
         </div>
