@@ -2,7 +2,7 @@ import React from "react";
 import { Typography } from "@material-tailwind/react";
 export const TableEmail = ({ data }) => {
   return (
-    <>
+    <div className="">
       <div className="font-kumbh-sans">
         <h6>Kode Dealer : {data.dealer}</h6>
         <h6>Nama Dealer : {data.nama_dealer}</h6>
@@ -56,6 +56,6 @@ export const TableEmail = ({ data }) => {
           </tbody>
         </table>
       </div>
-    </>
+    </div>
   );
 };

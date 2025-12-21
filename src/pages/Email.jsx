@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as xlsx from "xlsx";
-import { TableEmail } from "../components/TableEmail";
 import bgEmail from "../assets/Email marketing and newsletter content.svg";
 import Swal from "sweetalert2";
+import { CardEmail } from "../components/CardEmail";
 
 export const Email = () => {
   const fileInputRef = useRef(null);
@@ -50,7 +50,7 @@ export const Email = () => {
   const displayData = data || emailSaved;
 
   return (
-    <div className="flex h-full flex-col flex-1">
+    <div className="flex h-full flex-col flex-1 py-2 px-10">
       <div className="">
         <button
           onClick={hanldeClick}
@@ -73,12 +73,12 @@ export const Email = () => {
         </div>
       )}
       {displayData && (
-        <div className="flex flex-col h-[calc(100vh-120px)]">
-          <div className="py-10 flex flex-col gap-5 overflow-y-scroll">
+        <div className="flex flex-col h-[calc(100vh-120px)] mt-5">
+          <div className="py-10 grid grid-cols-2 gap-3 overflow-y-scroll flex-wrap">
             {data
-              ? data.map((i, index) => <TableEmail data={i} key={index} />)
+              ? data.map((i, index) => <CardEmail data={i} key={index} />)
               : emailSaved.map((i, index) => (
-                  <TableEmail data={i} key={index} />
+                  <CardEmail data={i} key={index} />
                 ))}
           </div>
           <div className="flex justify-end gap-3 my-5">

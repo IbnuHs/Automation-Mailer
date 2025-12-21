@@ -6,47 +6,45 @@ import { TbChecklist } from "react-icons/tb";
 import { BsFillSendFill } from "react-icons/bs";
 import { CheckTemplate } from "../components/CheckTemplate";
 import { SendEmail } from "../components/SendEmail";
+import { UploadCSVIntransit } from "../components/UploadCsvIntransit";
+import { CheckTemplateIntransit } from "../components/CheckTemplateIntransit";
+import { SendEmail2 } from "../components/SendEmail2";
 
-export function BroadCast() {
+export function BroadCastIntransit() {
   const [activeStep, setActiveStep] = useState(0);
   const [isLastStep, setIsLastStep] = useState(false);
   const [isFirstStep, setIsFirstStep] = useState(false);
   const handleNext = () => !isLastStep && setActiveStep(cur => cur + 1);
   const handlePrev = () => !isFirstStep && setActiveStep(cur => cur - 1);
-  const [data, setData] = useState(() => {
-    const saved = sessionStorage.getItem("data");
-    return saved ? JSON.parse(saved) : null;
-  });
-  const isStatusList = JSON.parse(sessionStorage.getItem("statusList"));
-  const [alreadySent, setAlreadySent] = useState(false);
+  const [data, setData] = useState(null);
   const renderStepContent = () => {
     switch (activeStep) {
       case 0:
         return (
-          <UploadCSV
+          <UploadCSVIntransit
             data={data}
             setData={setData}
             setActiveStep={setActiveStep}
           />
         );
       case 1:
-        return <CheckTemplate data={data} />;
+        return <CheckTemplateIntransit data={data} />;
       case 2:
         return (
-          <SendEmail
+          <SendEmail2
             data={data}
             setData={setData}
-            setAlreadySent={setAlreadySent}
+            // setAlreadySent={setAlreadySent}
             setActiveStep={setActiveStep}
           />
         );
     }
   };
-  useEffect(() => {
-    if (isStatusList && Object.keys(isStatusList).length > 0) {
-      setActiveStep(2);
-    }
-  }, []);
+  //   useEffect(() => {
+  //     if (isStatusList && Object.keys(isStatusList).length > 0) {
+  //       setActiveStep(2);
+  //     }
+  //   }, []);
   return (
     <div className="flex flex-col items-center flex-1 min-h-0 pb-2 box-border">
       <div className="w-full px-24 ">
@@ -111,13 +109,7 @@ export function BroadCast() {
         {renderStepContent()}
       </div>
       <div className="flex mt-2 w-full justify-between scale-90">
-        <Button
-          onClick={handlePrev}
-          disabled={
-            isFirstStep ||
-            alreadySent ||
-            (isStatusList && Object.keys(isStatusList).length > 0)
-          }>
+        <Button onClick={handlePrev} disabled={isFirstStep}>
           Prev
         </Button>
         <Button onClick={handleNext} disabled={isLastStep || !data}>

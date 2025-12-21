@@ -10,7 +10,7 @@ export const Navbar = () => {
     });
   };
   return (
-    <div className="flex justify-end py-3">
+    <div className="flex justify-end py-3 bg-white  px-4">
       <button
         type="button"
         onClick={logout}

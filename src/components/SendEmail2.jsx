@@ -7,8 +7,14 @@ import { useSendEmail } from "../hook/useSendEmail";
 import { htmlBody } from "../utils/bodyEmail";
 import { FaCheck, FaHourglassEnd } from "react-icons/fa";
 import { CgSpinner } from "react-icons/cg";
+import { intransitTable } from "../utils/intransitTable";
 
-export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
+export const SendEmail2 = ({
+  data,
+  setData,
+  setAlreadySent,
+  setActiveStep,
+}) => {
   const [id, setId] = useState(null);
   const subject = localStorage.getItem("subject");
   const header = localStorage.getItem("header");
@@ -42,7 +48,6 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
   };
   const [statusList, setStatusList] = useState(() => {
     const saved = sessionStorage.getItem("statusList");
-    // console.log(saved);
     return saved ? JSON.parse(saved) : {};
   });
   useEffect(() => {
@@ -59,25 +64,13 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
     }
     setPending(false);
   }, [countDown]);
-
+  const template = localStorage.getItem("templateIntransit");
   const email = JSON.parse(localStorage.getItem("email"));
   const handleSend = async (item, listEmail) => {
     // setPending(true);
-    setAlreadySent(true);
-    const bodyEmail = replaceVariable({ table: htmlBody(item) });
-    console.log(bodyEmail);
-    const fullBody = `<p style="font-size:16px; font-family:serif;">${header.replace(
-      /\n/g,
-      "<br>"
-    )}</p>
-        <br/>
-        ${htmlBody(item)}
-        <br/>
-        <p style="font-size:16px;font-family:serif;">${footer.replace(
-          /\n/g,
-          "<br>"
-        )}</p>
-        `;
+    // setAlreadySent(true);
+    const bodyEmail = replaceVariable({ table: intransitTable(item.data) });
+    // console.log(bodyEmail);
     setStatusList(prev => ({ ...prev, [item.kode]: "Loading" }));
     // setStatusList(prev => ({ ...prev, [item.kode]: "Sent" }));
     mutate(
@@ -92,11 +85,13 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
           setStatusList(prev => ({ ...prev, [item.kode]: "Sent" }));
           setPending(true);
           setCountDown(10);
+          console.log("Berhasil dikirim");
         },
-        onError: () => {
+        onError: err => {
           setStatusList(prev => ({ ...prev, [item.kode]: "Failed" }));
           setPending(true);
           setCountDown(10);
+          console.log(err);
         },
         onMutate: () => {
           setStatusList(prev => ({ ...prev, [item.kode]: "Loading" }));
@@ -109,10 +104,7 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
     await delay(5000);
     setPending(false);
   };
-  const template = localStorage.getItem("template");
 
-  // const bodyEmail = replaceVariable({ table: htmlBody });
-  // console.log(bodyEmail);
   const sendAllEmail = async () => {
     const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
     setDisableAllSend(true);
@@ -120,27 +112,12 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
       const listEmail = email?.find(mail => mail.dealer === item.kode);
       const check = statusList[item.kode];
       if (!check && listEmail) {
-        // console.log("Back");
-        // console.log(item["Nama Dealer"], " : ", check);
-        const bodyEmail = replaceVariable({ table: htmlBody(item) });
-        console.log(bodyEmail);
-        const fullBody = `<p style="font-size:16px; font-family:serif;">${header.replace(
-          /\n/g,
-          "<br>"
-        )}</p>
-        <br/>
-        ${htmlBody(item)}
-        <br/>
-        <p style="font-size:16px;font-family:serif;">${footer.replace(
-          /\n/g,
-          "<br>"
-        )}</p>
-        `;
+        const bodyEmail = replaceVariable({ table: intransitTable(item.data) });
         setPending(false);
         setStatusList(prev => ({ ...prev, [item.kode]: "Loading" }));
         await mutateAsync(
           {
-            body: fullBody,
+            body: bodyEmail,
             subject: subject,
             to: listEmail.email.split(","),
             cc: listEmail.emailcc.split(","),
@@ -175,7 +152,7 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
   };
 
   return (
-    <div className="overflow-y-auto flex gap-3 flex-col">
+    <div className="overflow-y-auto flex gap-3 flex-col px-8">
       <div className="flex justify-between">
         <Button
           color="red"
@@ -257,11 +234,13 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
               </div>
             </div>
 
-            <Collapse open={id === index}>
+            <Collapse
+              open={id === index}
+              className="overflow-x-scroll max-w-[78vw]">
               <div
                 className="mt-5"
                 dangerouslySetInnerHTML={{
-                  __html: replaceVariable({ table: htmlBody(item) }),
+                  __html: replaceVariable({ table: intransitTable(item.data) }),
                 }}></div>
             </Collapse>
           </div>

@@ -58,7 +58,6 @@ export const CheckTemplate = ({ data }) => {
   const bodyEmail = replaceVariable({ table: htmlBody });
   return (
     <div className="font-kumbh-sans px-20 flex flex-col gap-3 overflow-y-auto py-8">
-      {}
       <div className="flex gap-3">
         <h5 className="font-semibold">Subject : </h5>
         <p>{subject}</p>
