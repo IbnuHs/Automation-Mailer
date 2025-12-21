@@ -34,7 +34,7 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
   );
   const replaceVariable = (variable = {}) => {
     const res = JSON.parse(template)
-      .replace(/\n/g, "<br>")
+      ?.replace(/\n/g, "<br>")
       .replace(/{{(.*?)}}/g, (_, key) => {
         return variable[key.trim()] ?? "-";
       });

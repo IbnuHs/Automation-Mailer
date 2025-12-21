@@ -48,7 +48,7 @@ export function BroadCast() {
     }
   }, []);
   return (
-    <div className="flex flex-col items-center flex-1 min-h-0 pb-2 box-border">
+    <div className="flex flex-col items-center flex-1 min-h-0 pb-2 box-border px-10">
       <div className="w-full px-24 ">
         <div className=" origin-top">
           <Stepper

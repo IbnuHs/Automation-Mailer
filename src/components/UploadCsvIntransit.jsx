@@ -57,7 +57,7 @@ export const UploadCSVIntransit = ({ data, setData, setActiveStep }) => {
     setData(null);
   };
   return (
-    <div className="font-kumbh-sans flex flex-col min-h-0 h-full flex-1 overflow-scroll relative px-8">
+    <div className="font-kumbh-sans flex flex-col min-h-0 h-full flex-1 overflow-auto relative px-8">
       {data ? (
         <div className="font-kumbh-sans flex flex-col flex-1 min-h-0">
           <table className="w-full table-fixed text-left whitespace-normal break-words">

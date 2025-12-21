@@ -50,7 +50,7 @@ export const CheckTemplate = ({ data }) => {
   </table>
 `;
   const replaceVariable = (variable = {}) => {
-    const res = JSON.parse(template).replace(/{{(.*?)}}/g, (_, key) => {
+    const res = JSON.parse(template)?.replace(/{{(.*?)}}/g, (_, key) => {
       return variable[key.trim()] ?? "-";
     });
     return res;

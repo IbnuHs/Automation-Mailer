@@ -10,7 +10,6 @@ export function intransitTable(data) {
     acc[segment].push(item);
     return acc;
   }, {});
-  //   console.log(groupBySegment(grouped[7].data));
   const convertPerContainer = intransit =>
     Object.values(
       intransit.reduce((acc, row) => {

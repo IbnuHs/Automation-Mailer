@@ -20,9 +20,8 @@ export const CheckTemplateIntransit = ({ data }) => {
     }, {})
   );
   const htmlBody = intransitTable(grouped[0].data);
-  console.log(grouped[0]);
   const replaceVariable = (variable = {}) => {
-    const res = JSON.parse(template).replace(/{{(.*?)}}/g, (_, key) => {
+    const res = JSON.parse(template)?.replace(/{{(.*?)}}/g, (_, key) => {
       return variable[key.trim()] ?? "-";
     });
     return res;
