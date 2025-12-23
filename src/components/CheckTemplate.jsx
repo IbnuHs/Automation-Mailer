@@ -19,9 +19,11 @@ export const CheckTemplate = ({ data }) => {
     }, {})
   );
   const replaceVariable = (variable = {}) => {
-    const res = JSON.parse(template)?.replace(/{{(.*?)}}/g, (_, key) => {
-      return variable[key.trim()] ?? "-";
-    });
+    const res = variable
+      ? JSON.parse(template)?.replace(/{{(.*?)}}/g, (_, key) => {
+          return variable[key.trim()] ?? "-";
+        })
+      : "";
     return res;
   };
   const bodyEmail = replaceVariable({
@@ -32,7 +34,7 @@ export const CheckTemplate = ({ data }) => {
     <div className="font-kumbh-sans flex px-20 flex-col gap-3 overflow-y-auto py-8">
       <div className="flex gap-2">
         <h5 className="font-semibold">Subject : </h5>
-        <p>{JSON.parse(subject)}</p>
+        <p>{subject ? JSON.parse(subject) : ""}</p>
       </div>
       <div className="">
         <h5 className="font-semibold">Email :</h5>

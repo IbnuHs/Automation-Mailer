@@ -121,7 +121,7 @@ export const SendEmail2 = ({
         await mutateAsync(
           {
             body: bodyEmail,
-            subject: JSON.parse(subject),
+            subject: subject ? JSON.parse(subject) : subject,
             to: listEmail.email.split(","),
             cc: listEmail.emailcc.split(","),
           },

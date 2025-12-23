@@ -14,7 +14,7 @@ export function BroadCast() {
   const handleNext = () => !isLastStep && setActiveStep(cur => cur + 1);
   const handlePrev = () => !isFirstStep && setActiveStep(cur => cur - 1);
   const [data, setData] = useState(null);
-  const isStatusList = JSON.parse(sessionStorage.getItem("statusList"));
+  // const isStatusList = JSON.parse(sessionStorage.getItem("statusList"));
   const [alreadySent, setAlreadySent] = useState(false);
 
   const renderStepContent = () => {
@@ -116,13 +116,7 @@ export function BroadCast() {
         {renderStepContent()}
       </div>
       <div className="flex mt-2 w-full justify-between scale-90">
-        <Button
-          onClick={handlePrev}
-          disabled={
-            isFirstStep ||
-            alreadySent ||
-            (isStatusList && Object.keys(isStatusList).length > 0)
-          }>
+        <Button onClick={handlePrev} disabled={isFirstStep || alreadySent}>
           Prev
         </Button>
         <Button onClick={handleNext} disabled={isLastStep || !data}>

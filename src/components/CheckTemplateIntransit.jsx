@@ -34,7 +34,7 @@ export const CheckTemplateIntransit = ({ data }) => {
     <div className="font-kumbh-sans px-20 flex flex-col overflow-y-auto py-8 ">
       <div className="flex gap-3">
         <h5 className="font-semibold">Subject : </h5>
-        <p>{JSON.parse(subject)}</p>
+        <p>{subject ? JSON.parse(subject) : ""}</p>
       </div>
       <div className="">
         <h5 className="font-semibold">Email :</h5>
