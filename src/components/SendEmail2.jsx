@@ -101,7 +101,7 @@ export const SendEmail2 = ({
       }
     );
     const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-    await delay(5000);
+    await delay(30000);
     setPending(false);
   };
 
@@ -112,13 +112,16 @@ export const SendEmail2 = ({
       const listEmail = email?.find(mail => mail.dealer === item.kode);
       const check = statusList[item.kode];
       if (!check && listEmail) {
-        const bodyEmail = replaceVariable({ table: intransitTable(item.data) });
+        const bodyEmail = replaceVariable({
+          table: intransitTable(item.data),
+          dealer: item["Nama Dealer"],
+        });
         setPending(false);
         setStatusList(prev => ({ ...prev, [item.kode]: "Loading" }));
         await mutateAsync(
           {
             body: bodyEmail,
-            subject: subject,
+            subject: JSON.parse(subject),
             to: listEmail.email.split(","),
             cc: listEmail.emailcc.split(","),
           },
@@ -137,7 +140,7 @@ export const SendEmail2 = ({
           }
         );
         setPending(true);
-        await delay(10000);
+        await delay(30000);
         // setStatusList(prev => ({ ...prev, [item.kode]: "Sent" }));
       }
       setAlreadySentAll(true);
@@ -236,11 +239,14 @@ export const SendEmail2 = ({
 
             <Collapse
               open={id === index}
-              className="overflow-x-scroll max-w-[78vw]">
+              className="overflow-x-scroll max-w-[70vw]">
               <div
                 className="mt-5"
                 dangerouslySetInnerHTML={{
-                  __html: replaceVariable({ table: intransitTable(item.data) }),
+                  __html: replaceVariable({
+                    table: intransitTable(item.data),
+                    dealer: item["Nama Dealer"],
+                  }),
                 }}></div>
             </Collapse>
           </div>

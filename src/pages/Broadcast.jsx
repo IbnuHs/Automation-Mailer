@@ -13,12 +13,10 @@ export function BroadCast() {
   const [isFirstStep, setIsFirstStep] = useState(false);
   const handleNext = () => !isLastStep && setActiveStep(cur => cur + 1);
   const handlePrev = () => !isFirstStep && setActiveStep(cur => cur - 1);
-  const [data, setData] = useState(() => {
-    const saved = sessionStorage.getItem("data");
-    return saved ? JSON.parse(saved) : null;
-  });
+  const [data, setData] = useState(null);
   const isStatusList = JSON.parse(sessionStorage.getItem("statusList"));
   const [alreadySent, setAlreadySent] = useState(false);
+
   const renderStepContent = () => {
     switch (activeStep) {
       case 0:
@@ -43,10 +41,17 @@ export function BroadCast() {
     }
   };
   useEffect(() => {
-    if (isStatusList && Object.keys(isStatusList).length > 0) {
-      setActiveStep(2);
-    }
-  }, []);
+    const handleBeforeUnload = e => {
+      if (!data) return;
+
+      e.preventDefault();
+      e.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [data]);
+
   return (
     <div className="flex flex-col items-center flex-1 min-h-0 pb-2 box-border px-10">
       <div className="w-full px-24 ">

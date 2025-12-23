@@ -18,7 +18,6 @@ export const Sidebar = () => {
   const location = useLocation();
   const isBroadcastPages = location.pathname.startsWith("/broadcast");
   const isTemplatePages = location.pathname.startsWith("/template");
-  console.log(isBroadcastPages);
 
   useEffect(() => {
     if (!isBroadcastPages) {
@@ -43,7 +42,9 @@ export const Sidebar = () => {
           <li className="rounded-md overflow-hidden">
             <button
               onClick={() => setOnOpen(!onOpen)}
-              className="py-3 hover:bg-[#5376DF] w-full flex items-center justify-center gap-2 font-semibold rounded">
+              className={`py-3 hover:bg-[#5376DF] ${
+                isBroadcastPages && !onOpen ? "bg-[#5376DF]" : ""
+              } w-full flex items-center justify-center gap-2 font-semibold rounded`}>
               <HiOutlineSpeakerphone className="-rotate-[15deg]" /> Broadcast{" "}
               <MdKeyboardArrowDown className="text-[20px]" />
             </button>
@@ -73,17 +74,19 @@ export const Sidebar = () => {
               </NavLink>
             </div>
           </li>
-          <li className="rounded-md overflow-hidden">
+          <li className=" overflow-hidden">
             <button
               onClick={() => setOnOpenTemp(!onOpenTemp)}
-              className="py-3 hover:bg-[#5376DF] w-full flex items-center justify-center gap-2 font-semibold">
+              className={`py-3 hover:bg-[#5376DF] ${
+                isTemplatePages && !onOpenTemp ? "bg-[#5376DF]" : ""
+              } rounded-md w-full flex items-center justify-center gap-2 font-semibold`}>
               <IoText className="" /> Template
               <MdKeyboardArrowDown className="text-[20px]" />
             </button>
             <div
               className={` ${
                 onOpenTemp ? "max-h-[500px]" : "overflow-hidden max-h-0"
-              } flex-col transition-all ease-linear `}>
+              } flex-col transition-all ease-linear mt-2`}>
               <NavLink
                 to={"/template/oldstock"}
                 className={({ isActive }) =>

@@ -11,12 +11,9 @@ import { CgSpinner } from "react-icons/cg";
 export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
   const [id, setId] = useState(null);
   const subject = localStorage.getItem("subject");
-  const header = localStorage.getItem("header");
-  const footer = localStorage.getItem("footer");
   const { mutate, mutateAsync } = useSendEmail();
   const [countDown, setCountDown] = useState(0);
   const [disableAllSend, setDisableAllSend] = useState(false);
-  const [alreadySentAll, setAlreadySentAll] = useState(false);
   const grouped = Object.values(
     data.reduce((acc, item) => {
       const kode = item["Kode Dealer"] || item["KODE DEALER"];
@@ -40,11 +37,7 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
       });
     return res;
   };
-  const [statusList, setStatusList] = useState(() => {
-    const saved = sessionStorage.getItem("statusList");
-    // console.log(saved);
-    return saved ? JSON.parse(saved) : {};
-  });
+  const [statusList, setStatusList] = useState({});
   useEffect(() => {
     sessionStorage.setItem("statusList", JSON.stringify(statusList));
   }, [statusList]);
@@ -65,25 +58,12 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
     // setPending(true);
     setAlreadySent(true);
     const bodyEmail = replaceVariable({ table: htmlBody(item) });
-    console.log(bodyEmail);
-    const fullBody = `<p style="font-size:16px; font-family:serif;">${header.replace(
-      /\n/g,
-      "<br>"
-    )}</p>
-        <br/>
-        ${htmlBody(item)}
-        <br/>
-        <p style="font-size:16px;font-family:serif;">${footer.replace(
-          /\n/g,
-          "<br>"
-        )}</p>
-        `;
     setStatusList(prev => ({ ...prev, [item.kode]: "Loading" }));
     // setStatusList(prev => ({ ...prev, [item.kode]: "Sent" }));
     mutate(
       {
         body: bodyEmail,
-        subject: subject,
+        subject: JSON.parse(subject),
         to: listEmail.email.split(","),
         cc: listEmail.emailcc.split(","),
       },
@@ -120,27 +100,12 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
       const listEmail = email?.find(mail => mail.dealer === item.kode);
       const check = statusList[item.kode];
       if (!check && listEmail) {
-        // console.log("Back");
-        // console.log(item["Nama Dealer"], " : ", check);
         const bodyEmail = replaceVariable({ table: htmlBody(item) });
-        console.log(bodyEmail);
-        const fullBody = `<p style="font-size:16px; font-family:serif;">${header.replace(
-          /\n/g,
-          "<br>"
-        )}</p>
-        <br/>
-        ${htmlBody(item)}
-        <br/>
-        <p style="font-size:16px;font-family:serif;">${footer.replace(
-          /\n/g,
-          "<br>"
-        )}</p>
-        `;
         setPending(false);
         setStatusList(prev => ({ ...prev, [item.kode]: "Loading" }));
         await mutateAsync(
           {
-            body: fullBody,
+            body: bodyEmail,
             subject: subject,
             to: listEmail.email.split(","),
             cc: listEmail.emailcc.split(","),
@@ -163,7 +128,7 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
         await delay(10000);
         // setStatusList(prev => ({ ...prev, [item.kode]: "Sent" }));
       }
-      setAlreadySentAll(true);
+      setAlreadySent(true);
     }
   };
 
@@ -249,7 +214,7 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
                   ) : status === "Loading" ? (
                     <CgSpinner className="h-3 w-3 animate-spin" />
                   ) : status !== "Sent" && pending && listEmail ? (
-                    <FaHourglassEnd className="animate-spin" />
+                    <FaHourglassEnd className="" />
                   ) : (
                     <BsFillSendFill className="h-3 w-3" />
                   )}

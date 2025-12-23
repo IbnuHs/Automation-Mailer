@@ -1,4 +1,4 @@
-import React from "react";
+import { htmlBody } from "../utils/bodyEmail";
 
 export const CheckTemplate = ({ data }) => {
   const subject = localStorage.getItem("subject");
@@ -18,49 +18,21 @@ export const CheckTemplate = ({ data }) => {
       return acc;
     }, {})
   );
-  const htmlBody = `
-  <table border="1" cellspacing="0" cellpadding="4" 
-    style="border-collapse:collapse;width:100%;font-family:Arial, sans-serif;font-size:13px;margin:15px 0;border:1px solid #000;">
-    <thead style="background:#002060;color:white;text-align:left;">
-      <tr>
-        ${Object.keys(data[0])
-          .filter(key => key !== "Kode Dealer")
-          .map(i => `<th style="border:1px solid #000;">${i}</th>`)
-          .join("")}
-      </tr>
-    </thead>
-    <tbody>
-      ${grouped[0].data
-        .map(
-          row => `
-          <tr>
-            ${Object.keys(row)
-              .filter(key => key.toLocaleLowerCase() !== "kode dealer")
-              .map(
-                (key, j) =>
-                  ` <td style="border:1px solid #000;">${row[key] ?? "-"}</td>
-              `
-              )
-              .join("")}
-          </tr>
-        `
-        )
-        .join("")}
-    </tbody>
-  </table>
-`;
   const replaceVariable = (variable = {}) => {
     const res = JSON.parse(template)?.replace(/{{(.*?)}}/g, (_, key) => {
       return variable[key.trim()] ?? "-";
     });
     return res;
   };
-  const bodyEmail = replaceVariable({ table: htmlBody });
+  const bodyEmail = replaceVariable({
+    table: htmlBody(grouped[0]),
+    dealer: grouped[0]["Nama Dealer"],
+  });
   return (
-    <div className="font-kumbh-sans px-20 flex flex-col gap-3 overflow-y-auto py-8">
-      <div className="flex gap-3">
+    <div className="font-kumbh-sans flex px-20 flex-col gap-3 overflow-y-auto py-8">
+      <div className="flex gap-2">
         <h5 className="font-semibold">Subject : </h5>
-        <p>{subject}</p>
+        <p>{JSON.parse(subject)}</p>
       </div>
       <div className="">
         <h5 className="font-semibold">Email :</h5>

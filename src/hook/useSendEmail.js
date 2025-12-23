@@ -60,7 +60,7 @@ export const useSendEmail = () => {
     onError: error => {
       Swal.fire({
         title: "Error",
-        text: error.response.data.error,
+        text: error.response,
       });
       console.error("Gagal kirim email:", error);
       alert("Gagal kirim email: " + error.message);

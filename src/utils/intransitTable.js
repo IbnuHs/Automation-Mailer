@@ -1,9 +1,7 @@
 export function intransitTable(data) {
   const groupBySegment = data.reduce((acc, item) => {
     const segment =
-      item.Segment && item.Segment.trim() !== ""
-        ? item.Segment.trim()
-        : "UNKNOWN";
+      item.Segment && item.Segment.trim() !== "" ? item.Segment.trim() : "-";
     if (!acc[segment]) {
       acc[segment] = [];
     }
@@ -66,13 +64,13 @@ export function intransitTable(data) {
     style="border-collapse:collapse;width:100%;font-family:Arial, sans-serif;font-size:12px;margin:15px 0; white-space: normal;">
     <thead style="background:#002060;color:white;text-align:left;">
       <tr>
-        <th style="background:#BE5014;text-align:center;">No Container</th>
+        <th style="background:#BE5014;text-align:center;white-space:nowrap;padding:2px">No Container</th>
         ${header
           .map(
             item => `
-          <th style="background:#BE5014;text-align:center;">${
-            item.container ? item.container : "-"
-          }</th>
+          <th style="background:#BE5014;text-align:center;white-space:nowrap;padding:0px 4px;${
+            item.container ? "" : "min-width:100px;"
+          }">${item.container ? item.container : "-"}</th>
         `
           )
           .join("")}
@@ -118,7 +116,7 @@ export function intransitTable(data) {
                 <tr style="background:${
                   index % 2 === 1 ? "#f2f2f2" : "white"
                 };">
-                  <td style="padding:0 2px;">${type}</td>
+                  <td style="padding:0 2px;white-space:nowrap;">${type}</td>
                   ${header
                     .map(h => {
                       const key = h.container || "-";

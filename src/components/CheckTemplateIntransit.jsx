@@ -19,14 +19,17 @@ export const CheckTemplateIntransit = ({ data }) => {
       return acc;
     }, {})
   );
-  const htmlBody = intransitTable(grouped[0].data);
+  const htmlBody = intransitTable(grouped[3].data);
   const replaceVariable = (variable = {}) => {
     const res = JSON.parse(template)?.replace(/{{(.*?)}}/g, (_, key) => {
       return variable[key.trim()] ?? "-";
     });
     return res;
   };
-  const bodyEmail = replaceVariable({ table: htmlBody });
+  const bodyEmail = replaceVariable({
+    table: htmlBody,
+    dealer: grouped[3]["Nama Dealer"],
+  });
   return (
     <div className="font-kumbh-sans px-20 flex flex-col overflow-y-auto py-8 ">
       <div className="flex gap-3">

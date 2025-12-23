@@ -57,7 +57,7 @@ export const UploadCSVIntransit = ({ data, setData, setActiveStep }) => {
     setData(null);
   };
   return (
-    <div className="font-kumbh-sans flex flex-col min-h-0 h-full flex-1 overflow-auto relative px-8">
+    <div className="font-kumbh-sans flex flex-col min-h-0 h-full flex-1 overflow-auto relative">
       {data ? (
         <div className="font-kumbh-sans flex flex-col flex-1 min-h-0">
           <table className="w-full table-fixed text-left whitespace-normal break-words">
@@ -124,7 +124,7 @@ export const UploadCSVIntransit = ({ data, setData, setActiveStep }) => {
               alt=""
             />
             <h4 className="text-center text-[24px] font-semibold text-gray-400 font-kumbh-sans">
-              No File Yet
+              Upload File Intransit
             </h4>
           </div>
         </div>

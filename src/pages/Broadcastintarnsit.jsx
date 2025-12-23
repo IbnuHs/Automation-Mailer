@@ -1,11 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Stepper, Step, Button, Typography } from "@material-tailwind/react";
 import { FaFileUpload } from "react-icons/fa";
-import { UploadCSV } from "../components/UploadCSV";
 import { TbChecklist } from "react-icons/tb";
 import { BsFillSendFill } from "react-icons/bs";
-import { CheckTemplate } from "../components/CheckTemplate";
-import { SendEmail } from "../components/SendEmail";
 import { UploadCSVIntransit } from "../components/UploadCsvIntransit";
 import { CheckTemplateIntransit } from "../components/CheckTemplateIntransit";
 import { SendEmail2 } from "../components/SendEmail2";
@@ -46,7 +43,7 @@ export function BroadCastIntransit() {
   //     }
   //   }, []);
   return (
-    <div className="flex flex-col items-center flex-1 min-h-0 pb-2 box-border">
+    <div className="flex flex-col items-center flex-1 min-h-0 pb-2 box-border px-10">
       <div className="w-full px-24 ">
         <div className=" origin-top">
           <Stepper

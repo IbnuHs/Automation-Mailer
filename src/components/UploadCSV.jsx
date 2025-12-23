@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import bgfile from "../assets/Email marketing and newsletter content.png";
 import * as xlsx from "xlsx";
+import Swal from "sweetalert2";
+import { MdDelete } from "react-icons/md";
 
 export const UploadCSV = ({ data, setData, setActiveStep }) => {
   const inputRef = useRef(null);
@@ -18,22 +20,39 @@ export const UploadCSV = ({ data, setData, setActiveStep }) => {
           blankrows: true,
         });
         setData(jsonData);
-        console.log(jsonData);
         sessionStorage.setItem("data", JSON.stringify(jsonData));
       };
       reader.readAsArrayBuffer(file);
     }
   }, [file]);
   const clear = () => {
-    setFile(null);
-    sessionStorage.removeItem("data");
-    setData(null);
+    Swal.fire({
+      title: "Question",
+      text: "Ingin Menghapus Data?",
+      icon: "question",
+      showCancelButton: true,
+      showConfirmButton: true,
+    }).then(res => {
+      if (res.isConfirmed) {
+        setFile(null);
+        sessionStorage.removeItem("data");
+        setData(null);
+      }
+    });
   };
   return (
-    <div className="font-kumbh-sans flex flex-col min-h-0 h-full flex-1 overflow-auto px-8">
+    <div className="font-kumbh-sans flex flex-col min-h-0 h-full flex-1 overflow-auto">
       {data ? (
         <div className="font-kumbh-sans flex flex-col flex-1 min-h-0">
-          <table className="w-full table-fixed text-left whitespace-normal break-words">
+          <div className="flex justify-start">
+            <button
+              type="button"
+              onClick={clear}
+              className="bg-red-500 text-white rounded-md py-1.5 px-6 text-[14px]">
+              <MdDelete className="text-[18px]" />
+            </button>
+          </div>
+          <table className="w-full table-fixed text-left whitespace-normal break-words mt-5">
             <thead className="bg-blue-gray-50 z-10">
               <tr>
                 {Object.keys(data[0]).map((i, index) => (
@@ -63,14 +82,6 @@ export const UploadCSV = ({ data, setData, setActiveStep }) => {
               ))}
             </tbody>
           </table>
-          <div className="mt-5 flex justify-end">
-            <button
-              type="button"
-              onClick={clear}
-              className="bg-red-500 text-white rounded-md p-1 px-4 text-[14px]">
-              Clear
-            </button>
-          </div>
         </div>
       ) : (
         <div className="flex flex-col h-full scale-90">
@@ -97,7 +108,7 @@ export const UploadCSV = ({ data, setData, setActiveStep }) => {
               alt=""
             />
             <h4 className="text-center text-[24px] font-semibold text-gray-400 font-kumbh-sans">
-              No File Yet
+              Upload File Old Stock
             </h4>
           </div>
         </div>
