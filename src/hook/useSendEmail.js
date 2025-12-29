@@ -27,44 +27,17 @@ export const useSendEmail = () => {
     const accessToken = tokenResponse.accessToken;
     const toList = cleanEmails(to);
     const ccList = cleanEmails(cc);
-    const email = {
-      message: {
-        subject,
-        body: {
-          contentType: "HTML",
-          content: body,
-        },
-        toRecipients: toList.map(address => ({ emailAddress: { address } })),
-        ccRecipients:
-          ccList?.map(address => ({ emailAddress: { address } })) || [],
-      },
-    };
-
-    // Kirim request
-    const response = await axios.post(
-      "https://graph.microsoft.com/v1.0/me/sendMail",
-      email,
+    const res = await axios.post(
+      "https://backend-mailer-wtwp.vercel.app/api/send-email",
       {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-          "User-Agent": "",
-        },
+        accessToken,
+        subject,
+        body,
+        to,
+        cc,
       }
     );
-
-    return response.data;
-    // const res = await axios.post(
-    //   "https://backend-mailer-wtwp.vercel.app/api/send-email",
-    //   {
-    //     accessToken,
-    //     subject,
-    //     body,
-    //     to,
-    //     cc,
-    //   }
-    // );
-    // return res.data;
+    return res.data;
   };
 
   const mutation = useMutation({
