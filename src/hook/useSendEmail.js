@@ -48,6 +48,7 @@ export const useSendEmail = () => {
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
+          "User-Agent": "",
         },
       }
     );

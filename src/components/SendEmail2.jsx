@@ -183,7 +183,9 @@ export const SendEmail2 = ({
             className="border-2 border-gray-400 rounded-md px-4 py-2 font-kumbh-sans">
             <div className="flex justify-between items-center">
               <div className="max-w-[70%]">
-                <h5>{item["Nama Dealer"]}</h5>
+                <h5 className="font-semibold text-[15px]">
+                  {item["Nama Dealer"]}
+                </h5>
                 {listEmail ? (
                   <div className="text-[12px]">
                     <p>To : {listEmail.email}</p>
@@ -191,7 +193,9 @@ export const SendEmail2 = ({
                   </div>
                 ) : (
                   <div className="">
-                    <p className="font-semibold">Kosong</p>
+                    <p className="font-semibold text-red-400 text-[12px]">
+                      No Email configured
+                    </p>
                   </div>
                 )}
               </div>
