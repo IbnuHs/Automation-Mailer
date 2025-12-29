@@ -54,6 +54,17 @@ export const useSendEmail = () => {
     );
 
     return response.data;
+    // const res = await axios.post(
+    //   "https://backend-mailer-wtwp.vercel.app/api/send-email",
+    //   {
+    //     accessToken,
+    //     subject,
+    //     body,
+    //     to,
+    //     cc,
+    //   }
+    // );
+    // return res.data;
   };
 
   const mutation = useMutation({

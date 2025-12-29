@@ -7,6 +7,7 @@ import { useSendEmail } from "../hook/useSendEmail";
 import { htmlBody } from "../utils/bodyEmail";
 import { FaCheck, FaHourglassEnd } from "react-icons/fa";
 import { CgSpinner } from "react-icons/cg";
+import { openEmailClient } from "../utils/openEmailClient";
 
 export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
   const [id, setId] = useState(null);
@@ -60,6 +61,7 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
     const bodyEmail = replaceVariable({ table: htmlBody(item) });
     setStatusList(prev => ({ ...prev, [item.kode]: "Loading" }));
     // setStatusList(prev => ({ ...prev, [item.kode]: "Sent" }));
+    console.log(bodyEmail);
     mutate(
       {
         body: bodyEmail,
