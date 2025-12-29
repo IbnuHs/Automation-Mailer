@@ -5,8 +5,8 @@ export const Navbar = () => {
   const { instance } = useMsal();
   const logout = () => {
     instance.logoutRedirect({
-      postLogoutRedirectUri: "http://localhost:5173/",
-      // postLogoutRedirectUri: "https://automation-mailer.vercel.app",
+      // postLogoutRedirectUri: "http://localhost:5173/",
+      postLogoutRedirectUri: "https://automation-mailer.vercel.app",
     });
   };
   return (
