@@ -1,17 +1,14 @@
-import { FaMicrosoft } from "react-icons/fa6";
-import { useMsal } from "@azure/msal-react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import emailIcon from "../assets/email marketing and newsletter with new message.svg";
+import { useState } from "react";
+import { useNavigate } from "react-router";
 
-export const Auth = () => {
-  const { instance } = useMsal();
-  const handleLogin = async () => {
-    try {
-      await instance.loginPopup({ scopes: ["Mail.Send"] });
-      console.log("login Berhasil");
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+export const Auth = ({ setIsAuthenticated }) => {
+  const [hide, setHide] = useState(false);
+  const navigate = useNavigate();
+  const onLogin = () => {
+    setIsAuthenticated(true);
+    navigate("/broadcast/oldstock");
   };
   return (
     <div className="m-auto min-w-[300px] shadow-md items-stretch justify-center border flex flex-row h-fit">
@@ -28,19 +25,51 @@ export const Auth = () => {
           Just One Click
         </h3>
       </div>
-      <div className="flex flex-col flex-1 bg-base-white min-w-[480px] gap-28 items-center justify-center">
+      <div className="flex flex-col flex-1 border bg-base-white min-w-[480px] gap-10 items-center justify-center">
         <div className="text-center">
           <h2 className="font-semibold text-[24px]">SIGN UP</h2>
           <p className="text-base-gray font-semibold">
             Manage Your Client Email <br /> Much Easier
           </p>
         </div>
-        <button
-          type="button"
-          onClick={handleLogin}
-          className="flex items-center w-fit bg-base-blue text-white justify-center gap-2 shadow px-16 py-1 text-sm rounded-sm font-semibold ">
-          <FaMicrosoft className="" /> Login With Microsoft
-        </button>
+        <form
+          action=""
+          onSubmit={onLogin}
+          className="w-full max-w-[60%] flex flex-col gap-4">
+          <div className="flex flex-col">
+            <label htmlFor="username" className="font-semibold font-kumbh-sans">
+              Username
+            </label>
+            <input
+              type="text"
+              className="border-2 border-gray-500 rounded focus:outline-none py-0.5 px-2"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="email" className="font-semibold font-kumbh-sans">
+              Password
+            </label>
+            <div className="border-2 border-gray-500 rounded overflow-hidden  flex">
+              <input
+                type={hide ? "text" : "password"}
+                className="focus:outline-none py-0.5 px-2 flex-1"
+              />
+              <button
+                className="text-black px-1"
+                type="button"
+                onClick={() => setHide(!hide)}>
+                {hide ? <FaEye /> : <FaEyeSlash />}
+              </button>
+            </div>
+          </div>
+          <div className="flex items-center justify-center mt-5">
+            <button
+              type="submit"
+              className="bg-base-blue text-white rounded-md px-4 py-1 font-semibold">
+              Submit
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

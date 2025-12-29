@@ -12,7 +12,7 @@ import {
 import { PiShippingContainerBold } from "react-icons/pi";
 
 export const Sidebar = () => {
-  const { accounts } = useMsal();
+  // const { accounts } = useMsal();
   const [onOpen, setOnOpen] = useState(false);
   const [onOpenTemp, setOnOpenTemp] = useState(false);
   const location = useLocation();
@@ -128,7 +128,7 @@ export const Sidebar = () => {
             <IoPerson className="text-[20px] text-base-white" />
           </div>
           <h3 className="font-semibold text-base-white capitalize text-[16px]">
-            {accounts[0].name}
+            Admin
           </h3>
         </div>
       </div>

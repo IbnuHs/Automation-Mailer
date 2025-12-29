@@ -1,13 +1,12 @@
 import { useMsal } from "@azure/msal-react";
 import React from "react";
+import { useNavigate } from "react-router";
 
 export const Navbar = () => {
-  const { instance } = useMsal();
+  // const { instance } = useMsal();
+  const navigate = useNavigate();
   const logout = () => {
-    instance.logoutRedirect({
-      postLogoutRedirectUri: "http://localhost:5173/",
-      // postLogoutRedirectUri: "https://automation-mailer.vercel.app",
-    });
+    navigate("/login");
   };
   return (
     <div className="flex justify-end py-3 bg-white  px-4">

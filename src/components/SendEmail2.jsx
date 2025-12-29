@@ -16,9 +16,7 @@ export const SendEmail2 = ({
   setActiveStep,
 }) => {
   const [id, setId] = useState(null);
-  const subject = localStorage.getItem("subject");
-  const header = localStorage.getItem("header");
-  const footer = localStorage.getItem("footer");
+  const subject = localStorage.getItem("subjectIntransit");
   const { mutate, mutateAsync } = useSendEmail();
   const [countDown, setCountDown] = useState(0);
   const [disableAllSend, setDisableAllSend] = useState(false);
@@ -73,6 +71,7 @@ export const SendEmail2 = ({
     // console.log(bodyEmail);
     setStatusList(prev => ({ ...prev, [item.kode]: "Loading" }));
     // setStatusList(prev => ({ ...prev, [item.kode]: "Sent" }));
+    console.log(bodyEmail);
     mutate(
       {
         body: bodyEmail,

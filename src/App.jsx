@@ -1,31 +1,32 @@
-import { useEffect, useState } from "react";
-import { PublicClientApplication } from "@azure/msal-browser";
+import { useState } from "react";
 import { Auth } from "./pages/Auth";
-import {
-  AuthenticatedTemplate,
-  MsalProvider,
-  UnauthenticatedTemplate,
-} from "@azure/msal-react";
-import { msalConfig } from "./AuthConfig";
 import { HomePage } from "./pages/HomePage";
+import { Navigate, Route, Routes } from "react-router";
 
-const msalInstance = new PublicClientApplication(msalConfig);
 function App() {
-  msalInstance.initialize();
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   return (
     <>
       <div className="max-h-screen">
-        <MsalProvider instance={msalInstance}>
-          <UnauthenticatedTemplate>
-            <div className="min-h-screen font-kumbh-sans bg-gray-50 flex justify-center items-center">
-              <Auth />
-            </div>
-          </UnauthenticatedTemplate>
-          <AuthenticatedTemplate>
-            <HomePage />
-          </AuthenticatedTemplate>
-        </MsalProvider>
+        <div className="min-h-screen font-kumbh-sans bg-gray-50 flex justify-center items-center">
+          <Routes>
+            <Route
+              path="/login"
+              element={<Auth setIsAuthenticated={setIsAuthenticated} />}
+            />
+            <Route
+              path="/*"
+              element={
+                isAuthenticated ? (
+                  <HomePage />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+          </Routes>
+        </div>
       </div>
     </>
   );

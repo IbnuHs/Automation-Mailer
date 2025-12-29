@@ -61,7 +61,6 @@ export const SendEmail = ({ data, setData, setAlreadySent, setActiveStep }) => {
     const bodyEmail = replaceVariable({ table: htmlBody(item) });
     setStatusList(prev => ({ ...prev, [item.kode]: "Loading" }));
     // setStatusList(prev => ({ ...prev, [item.kode]: "Sent" }));
-    console.log(bodyEmail);
     mutate(
       {
         body: bodyEmail,

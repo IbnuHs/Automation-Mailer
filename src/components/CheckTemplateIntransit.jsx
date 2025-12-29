@@ -2,7 +2,7 @@ import React from "react";
 import { intransitTable } from "../utils/intransitTable";
 
 export const CheckTemplateIntransit = ({ data }) => {
-  const subject = localStorage.getItem("subject");
+  const subject = localStorage.getItem("subjectIntransit");
   const template = localStorage.getItem("templateIntransit");
   const grouped = Object.values(
     data?.reduce((acc, item) => {

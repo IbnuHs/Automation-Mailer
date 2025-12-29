@@ -1,10 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { useMsal } from "@azure/msal-react";
 import Swal from "sweetalert2";
 
 export const useSendEmail = () => {
-  const { accounts, instance } = useMsal();
   const cleanEmails = emails => {
     if (Array.isArray(emails)) {
       return emails
@@ -20,24 +18,20 @@ export const useSendEmail = () => {
   };
 
   const sendEmailApi = async ({ subject, body, to, cc }) => {
-    const tokenResponse = await instance.acquireTokenSilent({
-      scopes: ["Mail.Send"],
-      account: accounts[0],
-    });
-    const accessToken = tokenResponse.accessToken;
     const toList = cleanEmails(to);
     const ccList = cleanEmails(cc);
+    // console.log(subject);
     const res = await axios.post(
-      "https://backend-mailer-wtwp.vercel.app/api/send-email",
+      "https://backend-mailer-7raoled5e-ibnuhs-projects.vercel.app/api/send/mail",
       {
-        accessToken,
         subject,
         body,
-        to,
-        cc,
+        to: toList,
+        cc: ccList,
       }
     );
     return res.data;
+    // console.log(toList);
   };
 
   const mutation = useMutation({
@@ -45,10 +39,10 @@ export const useSendEmail = () => {
     onError: error => {
       Swal.fire({
         title: "Error",
-        text: error.response,
+        text: error.message,
       });
       console.error("Gagal kirim email:", error);
-      alert("Gagal kirim email: " + error.message);
+      // alert("Gagal kirim email: " + error.message);
     },
   });
 
